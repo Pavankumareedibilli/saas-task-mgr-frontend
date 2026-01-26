@@ -1,4 +1,3 @@
-// src/auth/api.ts
 import { http } from "../api/http";
 import type { LoginResponse, RegisterPayload, User } from "../types/auth";
 
