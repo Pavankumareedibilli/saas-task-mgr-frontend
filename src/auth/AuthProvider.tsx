@@ -15,7 +15,6 @@ export function AuthProvider({ children }: Props) {
   async function login(username_or_email: string, password: string) {
     const tokens = await loginApi(username_or_email, password);
     setTokens(tokens.access, tokens.refresh);
-
     const currentUser = await getCurrentUser();
     setUser(currentUser);
   }

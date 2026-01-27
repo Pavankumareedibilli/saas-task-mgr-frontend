@@ -14,9 +14,6 @@ export async function login(
   return response.data;
 }
 
-
-
-
 export async function register(payload: RegisterPayload): Promise<void> {
   await http.post("/auth/register/", payload);
 }
