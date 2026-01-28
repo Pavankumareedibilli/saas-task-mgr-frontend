@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "../auth/useAuth";
-import { ProtectedRoute }  from "./ProtectedRoute";
-import { LoginPage } from "../auth/LoginPage"
+import { ProtectedRoute } from "./ProtectedRoute";
+import { LoginPage } from "../auth/LoginPage";
+import { AppLayout } from "../layouts/AppLayout";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -11,15 +12,15 @@ export function AppRoutes() {
       <Routes>
         <Route
           path="/login"
-          element={
-            isAuthenticated ? <Navigate to="/" /> : <LoginPage />
-          }
+          element={isAuthenticated ? <Navigate to="/" /> : <LoginPage />}
         />
         <Route
           path="/*"
           element={
             <ProtectedRoute>
-              <div className="p-10">Protected App Area</div>
+              <AppLayout>
+                <div>App content goes here</div>
+              </AppLayout>
             </ProtectedRoute>
           }
         />
