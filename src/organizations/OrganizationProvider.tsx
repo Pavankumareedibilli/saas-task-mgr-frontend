@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { OrganizationContext } from "./OrganizationContext";
-import { fetchOrganizations } from "./api";
 import type { Organization } from "../types/organization";
+import { createOrganization, fetchOrganizations } from "./api";
 
 interface Props {
   children: React.ReactNode;
@@ -17,7 +17,7 @@ export function OrganizationProvider({ children }: Props) {
       try {
         const orgs = await fetchOrganizations();
         setOrganizations(orgs);
-        
+
         if (orgs.length > 0) {
           setActiveOrg(orgs[0]);
         }
@@ -28,6 +28,12 @@ export function OrganizationProvider({ children }: Props) {
 
     loadOrganizations();
   }, []);
+  async function createOrg(name: string) {
+    const newOrg = await createOrganization(name);
+
+    setOrganizations((prev) => [...prev, newOrg]);
+    setActiveOrg(newOrg);
+  }
 
   return (
     <OrganizationContext.Provider
@@ -35,6 +41,7 @@ export function OrganizationProvider({ children }: Props) {
         organizations,
         activeOrg,
         setActiveOrg,
+        createOrg,
         loading,
       }}
     >
