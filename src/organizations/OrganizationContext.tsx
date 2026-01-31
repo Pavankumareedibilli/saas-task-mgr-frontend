@@ -4,7 +4,7 @@ import type { Organization } from "../types/organization";
 export interface OrganizationContextType {
   organizations: Organization[];
   activeOrg: Organization | null;
-  setActiveOrg: (org: Organization) => void;
+  setActiveOrg: (org: Organization  | null) => void;
   createOrg: (name: string) => Promise<void>;
   loading: boolean;
 }

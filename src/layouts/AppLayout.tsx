@@ -2,6 +2,8 @@ import { OrganizationSwitcher } from "../organizations/OrganizationSwitcher";
 import { useAuth } from "../auth/useAuth";
 import { useState } from "react";
 import { CreateOrganizationModal } from "../organizations/CreateOrganizationModal";
+import { MemberList } from "../organizations/MemberList";
+import { InviteMemberModal } from "../organizations/InviteMemberModal";
 
 interface Props {
   children: React.ReactNode;
@@ -10,6 +12,7 @@ interface Props {
 export function AppLayout({ children }: Props) {
   const { user, logout } = useAuth();
   const [showCreateOrg, setShowCreateOrg] = useState(false);
+  const [showInvite, setShowInvite] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -17,6 +20,13 @@ export function AppLayout({ children }: Props) {
         <div className="flex items-center gap-4">
           <span className="font-bold">Multi-Tenent-SaaS-tsk_mgr</span>
           <OrganizationSwitcher />
+          <button
+            onClick={() => setShowInvite(true)}
+            className="text-sm text-blue-600"
+          >
+            Invite
+          </button>
+
           <button
             onClick={() => setShowCreateOrg(true)}
             className="text-sm text-blue-600"
@@ -33,10 +43,13 @@ export function AppLayout({ children }: Props) {
         </div>
       </header>
 
-      <main className="flex-1 p-6">{children}</main>
+      <main className="flex-1 p-6">
+        {children} <MemberList />
+      </main>
       {showCreateOrg && (
         <CreateOrganizationModal onClose={() => setShowCreateOrg(false)} />
       )}
+      {showInvite && <InviteMemberModal onClose={() => setShowInvite(false)} />}
     </div>
   );
 }
