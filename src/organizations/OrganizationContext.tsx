@@ -6,6 +6,7 @@ export interface OrganizationContextType {
   activeOrg: Organization | null;
   setActiveOrg: (org: Organization  | null) => void;
   createOrg: (name: string) => Promise<void>;
+  reloadOrganizations: () => Promise<void>;
   loading: boolean;
 }
 

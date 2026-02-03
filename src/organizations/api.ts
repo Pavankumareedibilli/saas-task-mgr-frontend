@@ -37,3 +37,8 @@ export async function fetchMembers(
   );
   return response.data;
 }
+
+export async function acceptInvite(token: string): Promise<void> {
+  await http.post("/organizations/invitations/accept/", { token });
+}
+

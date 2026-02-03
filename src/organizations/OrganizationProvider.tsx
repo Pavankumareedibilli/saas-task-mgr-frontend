@@ -34,6 +34,18 @@ export function OrganizationProvider({ children }: Props) {
     setOrganizations((prev) => [...prev, newOrg]);
     setActiveOrg(newOrg);
   }
+ 
+
+  async function reloadOrganizations() {
+  setLoading(true);
+  const orgs = await fetchOrganizations();
+  setOrganizations(orgs);
+  if (orgs.length > 0) {
+    setActiveOrg(orgs[0]);
+  }
+  setLoading(false);
+}
+
 
   return (
     <OrganizationContext.Provider
@@ -42,6 +54,7 @@ export function OrganizationProvider({ children }: Props) {
         activeOrg,
         setActiveOrg,
         createOrg,
+        reloadOrganizations,
         loading,
       }}
     >

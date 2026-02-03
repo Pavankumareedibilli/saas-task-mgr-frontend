@@ -3,6 +3,7 @@ import { useAuth } from "../auth/useAuth";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { LoginPage } from "../auth/LoginPage";
 import { AppLayout } from "../layouts/AppLayout";
+import { AcceptInvitePage } from "../organizations/AcceptInvitePage";
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -12,8 +13,10 @@ export function AppRoutes() {
       <Routes>
         <Route
           path="/login"
-          element={isAuthenticated ? <Navigate to="/" /> : <LoginPage />}
+          element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />}
         />
+
+        <Route path="/accept-invite" element={<AcceptInvitePage />} />
         <Route
           path="/*"
           element={
