@@ -4,6 +4,33 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { LoginPage } from "../auth/LoginPage";
 import { AppLayout } from "../layouts/AppLayout";
 import { AcceptInvitePage } from "../organizations/AcceptInvitePage";
+import { useState } from "react";
+import { BoardList } from "../boards/BoardList";
+import { CreateBoardModal } from "../boards/CreateBoardModal";
+
+function BoardCreateRetrieve() {
+  const [showCreateBoard, setShowCreateBoard] = useState(false);
+
+  return (
+    <>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-xl font-bold">Boards</h1>
+        <button
+          onClick={() => setShowCreateBoard(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          + New Board
+        </button>
+      </div>
+
+      <BoardList />
+
+      {showCreateBoard && (
+        <CreateBoardModal onClose={() => setShowCreateBoard(false)} />
+      )}
+    </>
+  );
+}
 
 export function AppRoutes() {
   const { isAuthenticated } = useAuth();
@@ -13,7 +40,9 @@ export function AppRoutes() {
       <Routes>
         <Route
           path="/login"
-          element={isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />}
+          element={
+            isAuthenticated ? <Navigate to="/" replace /> : <LoginPage />
+          }
         />
 
         <Route path="/accept-invite" element={<AcceptInvitePage />} />
@@ -22,7 +51,7 @@ export function AppRoutes() {
           element={
             <ProtectedRoute>
               <AppLayout>
-                <div>App content goes here</div>
+                  <BoardCreateRetrieve/> 
               </AppLayout>
             </ProtectedRoute>
           }
