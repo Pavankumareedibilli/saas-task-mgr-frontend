@@ -7,6 +7,10 @@ import { AcceptInvitePage } from "../organizations/AcceptInvitePage";
 import { useState } from "react";
 import { BoardList } from "../boards/BoardList";
 import { CreateBoardModal } from "../boards/CreateBoardModal";
+// import { BoardDetailProvider } from "../boards/BoardDetailProvider";
+// import { BoardDetailSmokeTest } from "../boards/BoardDetailSmokeTest";
+import { BoardDetailPage } from "../boards/BoardDetailPage";
+
 
 function BoardCreateRetrieve() {
   const [showCreateBoard, setShowCreateBoard] = useState(false);
@@ -51,7 +55,20 @@ export function AppRoutes() {
           element={
             <ProtectedRoute>
               <AppLayout>
-                  <BoardCreateRetrieve/> 
+                <BoardCreateRetrieve />
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="boards/:boardId"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                {/* <BoardDetailProvider>
+                  <BoardDetailSmokeTest />
+                </BoardDetailProvider> */}
+                <BoardDetailPage />
               </AppLayout>
             </ProtectedRoute>
           }

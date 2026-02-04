@@ -8,6 +8,8 @@ interface Props {
   children: React.ReactNode;
 }
 
+
+
 export function BoardProvider({ children }: Props) {
   const { activeOrg } = useOrganization();
   const [boards, setBoards] = useState<Board[]>([]);

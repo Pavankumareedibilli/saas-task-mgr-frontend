@@ -1,7 +1,9 @@
 import { useBoards } from "./useBoards";
+import { useNavigate } from "react-router-dom";
 
 export function BoardList() {
   const { boards, loading } = useBoards();
+  const navigate = useNavigate();
 
   if (loading) {
     return <p>Loading boards...</p>;
@@ -16,6 +18,7 @@ export function BoardList() {
       {boards.map((board) => (
         <div
           key={board.id}
+          onClick={() => navigate(`/boards/${board.id}`)}
           className="border rounded p-4 hover:bg-gray-50 cursor-pointer"
         >
           <h3 className="font-bold">{board.name}</h3>
