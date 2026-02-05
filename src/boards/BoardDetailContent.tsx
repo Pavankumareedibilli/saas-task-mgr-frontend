@@ -1,7 +1,10 @@
 import { useBoardDetail } from "./useBoardDetail";
 import { ListColumn } from "./ListColumn";
+import { useState } from "react";
+import { CreateListForm } from "./CreateListForm";
 
 export function BoardDetailContent() {
+  const [showCreateList, setShowCreateList] = useState(false);
   const { board, loading } = useBoardDetail();
 
   if (loading) {
@@ -27,6 +30,16 @@ export function BoardDetailContent() {
             ))}
         </div>
       </div>
+      {showCreateList ? (
+        <CreateListForm onClose={() => setShowCreateList(false)} />
+      ) : (
+        <button
+          onClick={() => setShowCreateList(true)}
+          className="w-72 border border-dashed rounded p-3 text-sm text-gray-600 flex-shrink-0"
+        >
+          + Add another list
+        </button>
+      )}
     </div>
   );
 }

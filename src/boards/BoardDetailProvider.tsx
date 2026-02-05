@@ -5,6 +5,7 @@ import type { Board } from "../types/board";
 import { useParams, useNavigate } from "react-router-dom";
 import { useOrganization } from "../organizations/useOrganization";
 import { createCard as createCardApi } from "./cardApi";
+import { createList as createListApi } from "./listApi";
 
 interface Props {
   children: React.ReactNode;
@@ -45,8 +46,23 @@ export function BoardDetailProvider({ children }: Props) {
         lists: prev.lists.map((list) =>
           list.id === listId
             ? { ...list, cards: [...list.cards, newCard] }
-            : list
+            : list,
         ),
+      };
+    });
+  }
+
+  async function createList(title: string) {
+    if (!board) return;
+
+    const newList = await createListApi(title, board.id);
+
+    setBoard((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        lists: [...prev.lists, { ...newList, cards: [] }],
       };
     });
   }
@@ -63,6 +79,7 @@ export function BoardDetailProvider({ children }: Props) {
         loading,
         reloadBoard: load,
         createCard,
+        createList,
       }}
     >
       {children}
