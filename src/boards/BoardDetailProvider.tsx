@@ -4,6 +4,7 @@ import { fetchBoardDetail } from "./detailApi";
 import type { Board } from "../types/board";
 import { useParams, useNavigate } from "react-router-dom";
 import { useOrganization } from "../organizations/useOrganization";
+import { createCard as createCardApi } from "./cardApi";
 
 interface Props {
   children: React.ReactNode;
@@ -18,30 +19,42 @@ export function BoardDetailProvider({ children }: Props) {
   const { activeOrg } = useOrganization();
 
   async function load() {
-  if (!boardId || !activeOrg) return;
+    if (!boardId || !activeOrg) return;
 
-  try {
-    setLoading(true);
-    const data = await fetchBoardDetail(
-      Number(boardId),
-      activeOrg.id
-    );
-    setBoard(data);
-  } catch {
-    navigate("/", { replace: true });
-  } finally {
-    setLoading(false);
+    try {
+      setLoading(true);
+      const data = await fetchBoardDetail(Number(boardId), activeOrg.id);
+      setBoard(data);
+    } catch {
+      navigate("/", { replace: true });
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
+  async function createCard(listId: number, title: string) {
+    if (!board) return;
 
-  // useEffect(() => {
-  //   load();
-  // }, [boardId]);
- useEffect(() => {
-  setBoard(null);
-  load();
-}, [boardId, activeOrg?.id]);
+    const newCard = await createCardApi(title, listId);
+
+    setBoard((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        lists: prev.lists.map((list) =>
+          list.id === listId
+            ? { ...list, cards: [...list.cards, newCard] }
+            : list
+        ),
+      };
+    });
+  }
+
+  useEffect(() => {
+    setBoard(null);
+    load();
+  }, [boardId, activeOrg?.id]);
 
   return (
     <BoardDetailContext.Provider
@@ -49,6 +62,7 @@ export function BoardDetailProvider({ children }: Props) {
         board,
         loading,
         reloadBoard: load,
+        createCard,
       }}
     >
       {children}

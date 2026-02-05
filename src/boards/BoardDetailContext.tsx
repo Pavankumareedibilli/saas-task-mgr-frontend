@@ -5,6 +5,8 @@ export interface BoardDetailContextType {
   board: Board | null;
   loading: boolean;
   reloadBoard: () => Promise<void>;
+  createCard: (listId: number, title: string) => Promise<void>;
+
 }
 
 export const BoardDetailContext =
