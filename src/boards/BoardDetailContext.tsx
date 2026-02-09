@@ -7,6 +7,8 @@ export interface BoardDetailContextType {
   reloadBoard: () => Promise<void>;
   createCard: (listId: number, title: string) => Promise<void>;
   createList: (title: string) => Promise<void>;
+  moveCard: (cardId: number, targetListId: number) => Promise<void>;
+
 }
 
 export const BoardDetailContext =

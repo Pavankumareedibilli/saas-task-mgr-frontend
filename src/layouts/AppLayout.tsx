@@ -18,7 +18,7 @@ export function AppLayout({ children }: Props) {
     <div className="min-h-screen flex flex-col">
       <header className="border-b p-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <span className="font-bold">Multi-Tenent-SaaS-tsk_mgr</span>
+          <span className="font-bold">Multi-Tenant Task/Project Manager </span>
           <OrganizationSwitcher />
           <button
             onClick={() => setShowInvite(true)}

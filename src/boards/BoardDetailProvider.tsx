@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useOrganization } from "../organizations/useOrganization";
 import { createCard as createCardApi } from "./cardApi";
 import { createList as createListApi } from "./listApi";
+import { moveCard as moveCardApi } from "./cardMoveApi";
 
 interface Props {
   children: React.ReactNode;
@@ -66,6 +67,30 @@ export function BoardDetailProvider({ children }: Props) {
       };
     });
   }
+  async function moveCard(cardId: number, targetListId: number) {
+    if (!board) return;
+
+    const movedCard = await moveCardApi(cardId, targetListId);
+
+    setBoard((prev) => {
+      if (!prev) return prev;
+      const listsWithoutCard = prev.lists.map((list) => ({
+        ...list,
+        cards: list.cards.filter((c) => c.id !== cardId),
+      }));
+      return {
+        ...prev,
+        lists: listsWithoutCard.map((list) =>
+          list.id === movedCard.list
+            ? {
+                ...list,
+                cards: [...list.cards, movedCard],
+              }
+            : list,
+        ),
+      };
+    });
+  }
 
   useEffect(() => {
     setBoard(null);
@@ -80,6 +105,7 @@ export function BoardDetailProvider({ children }: Props) {
         reloadBoard: load,
         createCard,
         createList,
+        moveCard,
       }}
     >
       {children}
