@@ -8,6 +8,7 @@ interface Props {
 export function CardItem({ card }: Props) {
   const { board, moveCard } = useBoardDetail();
   const [showMove, setShowMove] = useState(false);
+  const { reorderCard } = useBoardDetail();
 
   if (!board) return null;
 
@@ -21,8 +22,21 @@ export function CardItem({ card }: Props) {
         >
           Move
         </button>
+        <div className="flex gap-1">
+          <button
+            onClick={() => reorderCard(card.id, "up")}
+            className="text-xs text-gray-500"
+          >
+            ↑
+          </button>
+          <button
+            onClick={() => reorderCard(card.id, "down")}
+            className="text-xs text-gray-500"
+          >
+            ↓
+          </button>
+        </div>
       </div>
-
       {showMove && (
         <select
           className="mt-2 w-full border text-xs"

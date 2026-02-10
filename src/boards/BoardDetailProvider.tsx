@@ -7,6 +7,7 @@ import { useOrganization } from "../organizations/useOrganization";
 import { createCard as createCardApi } from "./cardApi";
 import { createList as createListApi } from "./listApi";
 import { moveCard as moveCardApi } from "./cardMoveApi";
+import { reorderCard as reorderCardApi } from "./cardReorderApi";
 
 interface Props {
   children: React.ReactNode;
@@ -92,6 +93,53 @@ export function BoardDetailProvider({ children }: Props) {
     });
   }
 
+  async function reorderCard(cardId: number, direction: "up" | "down") {
+    if (!board) return;
+
+    let before_id: number | null = null;
+    let after_id: number | null = null;
+
+    const list = board.lists.find((l) => l.cards.some((c) => c.id === cardId));
+    if (!list) return;
+
+    const index = list.cards.findIndex((c) => c.id === cardId);
+    const targetIndex = direction === "up" ? index - 1 : index + 1;
+    
+    if (targetIndex < 0 || targetIndex >= list.cards.length) return;
+
+    before_id = targetIndex > 0 ? list.cards[targetIndex - 1].id : null;
+
+    after_id =
+      targetIndex < list.cards.length - 1
+        ? list.cards[targetIndex + 1].id
+        : null;
+
+    setBoard((prev) => {
+      if (!prev) return prev;
+
+      const lists = prev.lists.map((l) => {
+        if (l.id !== list.id) return l;
+
+        const cards = [...l.cards];
+        const [moved] = cards.splice(index, 1);
+        cards.splice(targetIndex, 0, moved);
+
+        return { ...l, cards };
+      });
+
+      return { ...prev, lists };
+    });
+
+    try {
+      await reorderCardApi(cardId, {
+        before_id,
+        after_id,
+      });
+    } catch (e) {
+      console.error("Reorder failed", e);
+    }
+  }
+
   useEffect(() => {
     setBoard(null);
     load();
@@ -106,6 +154,7 @@ export function BoardDetailProvider({ children }: Props) {
         createCard,
         createList,
         moveCard,
+        reorderCard,
       }}
     >
       {children}

@@ -8,7 +8,10 @@ export interface BoardDetailContextType {
   createCard: (listId: number, title: string) => Promise<void>;
   createList: (title: string) => Promise<void>;
   moveCard: (cardId: number, targetListId: number) => Promise<void>;
-
+  reorderCard: (
+  cardId: number,
+  direction: "up" | "down"
+) => Promise<void>;
 }
 
 export const BoardDetailContext =
