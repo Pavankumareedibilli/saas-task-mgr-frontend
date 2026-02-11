@@ -9,18 +9,36 @@ export function MemberList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!activeOrg) return;
+    if (!activeOrg) {
+      setMembers([]);
+      setLoading(false);
+      return;
+    }
 
-    const orgId = activeOrg.id;
+    setMembers([]); 
+    setLoading(true);
+
+    let cancelled = false;
 
     async function load() {
-      setLoading(true);
-      const data = await fetchMembers(orgId);
-      setMembers(data);
-      setLoading(false);
+      try {
+        if (!activeOrg) return;
+        const data = await fetchMembers(activeOrg.id);
+        if (!cancelled) {
+          setMembers(data);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
     }
 
     load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [activeOrg]);
 
   if (!activeOrg) return null;

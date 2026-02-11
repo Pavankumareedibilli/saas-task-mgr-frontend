@@ -46,6 +46,10 @@ export function AuthProvider({ children }: Props) {
     loadUser();
   }, []);
 
+  if (loading) {
+    return <div>Initializing...</div>;
+  }
+
   return (
     <AuthContext.Provider
       value={{

@@ -4,6 +4,9 @@ import { useState } from "react";
 import { CreateOrganizationModal } from "../organizations/CreateOrganizationModal";
 import { MemberList } from "../organizations/MemberList";
 import { InviteMemberModal } from "../organizations/InviteMemberModal";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useOrganization } from "../organizations/useOrganization";
 
 interface Props {
   children: React.ReactNode;
@@ -13,6 +16,14 @@ export function AppLayout({ children }: Props) {
   const { user, logout } = useAuth();
   const [showCreateOrg, setShowCreateOrg] = useState(false);
   const [showInvite, setShowInvite] = useState(false);
+  const navigate = useNavigate();
+  const { activeOrg } = useOrganization();
+  useEffect(() => {
+  if (!activeOrg) return;
+
+  navigate("/", { replace: true });
+}, [activeOrg?.id]);
+
 
   return (
     <div className="min-h-screen flex flex-col">

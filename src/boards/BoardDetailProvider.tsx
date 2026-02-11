@@ -139,11 +139,44 @@ export function BoardDetailProvider({ children }: Props) {
       console.error("Reorder failed", e);
     }
   }
-
   useEffect(() => {
+  if (!boardId || !activeOrg) {
     setBoard(null);
-    load();
-  }, [boardId, activeOrg?.id]);
+    return;
+  }
+
+  let cancelled = false;
+
+  async function loadBoard() {
+    setLoading(true);
+    try {
+      if (!activeOrg) return null;
+      const data = await fetchBoardDetail(
+        Number(boardId),
+        activeOrg.id
+      );
+
+      if (!cancelled) {
+        setBoard(data);
+      }
+    } catch {
+      if (!cancelled) {
+        navigate("/", { replace: true });
+      }
+    } finally {
+      if (!cancelled) {
+        setLoading(false);
+      }
+    }
+  }
+
+  loadBoard();
+
+  return () => {
+    cancelled = true;
+  };
+}, [boardId, activeOrg]);
+
 
   return (
     <BoardDetailContext.Provider
