@@ -1,6 +1,8 @@
 import type { Card } from "../types/card";
 import { useState } from "react";
 import { useBoardDetail } from "./useBoardDetail";
+import { usePermissions } from "../permissions/usePermissions";
+
 interface Props {
   card: Card;
 }
@@ -9,6 +11,7 @@ export function CardItem({ card }: Props) {
   const { board, moveCard } = useBoardDetail();
   const [showMove, setShowMove] = useState(false);
   const { reorderCard } = useBoardDetail();
+  const { canManageCards } = usePermissions();
 
   if (!board) return null;
 
@@ -16,26 +19,30 @@ export function CardItem({ card }: Props) {
     <div className="bg-white rounded p-3 shadow-sm border text-sm">
       <div className="flex justify-between items-center">
         <span>{card.title}</span>
-        <button
-          onClick={() => setShowMove((v) => !v)}
-          className="text-xs text-gray-500"
-        >
-          Move
-        </button>
-        <div className="flex gap-1">
+        {canManageCards && (
           <button
-            onClick={() => reorderCard(card.id, "up")}
+            onClick={() => setShowMove((v) => !v)}
             className="text-xs text-gray-500"
           >
-            ↑
+            Move
           </button>
-          <button
-            onClick={() => reorderCard(card.id, "down")}
-            className="text-xs text-gray-500"
-          >
-            ↓
-          </button>
-        </div>
+        )}
+        {canManageCards && (
+          <div className="flex gap-1">
+            <button
+              onClick={() => reorderCard(card.id, "up")}
+              className="text-xs text-gray-500"
+            >
+              ↑
+            </button>
+            <button
+              onClick={() => reorderCard(card.id, "down")}
+              className="text-xs text-gray-500"
+            >
+              ↓
+            </button>
+          </div>
+        )}
       </div>
       {showMove && (
         <select

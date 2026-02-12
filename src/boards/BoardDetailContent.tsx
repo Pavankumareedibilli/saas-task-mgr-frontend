@@ -2,10 +2,15 @@ import { useBoardDetail } from "./useBoardDetail";
 import { ListColumn } from "./ListColumn";
 import { useState } from "react";
 import { CreateListForm } from "./CreateListForm";
+import { usePermissions } from "../permissions/usePermissions";
+
+
 
 export function BoardDetailContent() {
   const [showCreateList, setShowCreateList] = useState(false);
   const { board, loading } = useBoardDetail();
+  const { canManageLists } = usePermissions();
+
 
   if (loading) {
     return <div className="p-6">Loading board...</div>;
@@ -30,7 +35,7 @@ export function BoardDetailContent() {
             ))}
         </div>
       </div>
-      {showCreateList ? (
+      {canManageLists &&(showCreateList ? (
         <CreateListForm onClose={() => setShowCreateList(false)} />
       ) : (
         <button
@@ -39,7 +44,7 @@ export function BoardDetailContent() {
         >
           + Add another list
         </button>
-      )}
+      ))}
     </div>
   );
 }

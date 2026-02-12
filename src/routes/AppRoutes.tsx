@@ -8,21 +8,25 @@ import { useState } from "react";
 import { BoardList } from "../boards/BoardList";
 import { CreateBoardModal } from "../boards/CreateBoardModal";
 import { BoardDetailPage } from "../boards/BoardDetailPage";
+import { usePermissions } from "../permissions/usePermissions";
 
 
 function BoardCreateRetrieve() {
   const [showCreateBoard, setShowCreateBoard] = useState(false);
+  const { canManageBoards } = usePermissions();
+
+  
 
   return (
     <>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-bold">Boards</h1>
-        <button
+        {canManageBoards &&(<button
           onClick={() => setShowCreateBoard(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded"
         >
           + New Board
-        </button>
+        </button>)}
       </div>
 
       <BoardList />

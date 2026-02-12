@@ -7,6 +7,7 @@ import { InviteMemberModal } from "../organizations/InviteMemberModal";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useOrganization } from "../organizations/useOrganization";
+import { usePermissions } from "../permissions/usePermissions";
 
 interface Props {
   children: React.ReactNode;
@@ -18,12 +19,13 @@ export function AppLayout({ children }: Props) {
   const [showInvite, setShowInvite] = useState(false);
   const navigate = useNavigate();
   const { activeOrg } = useOrganization();
+  const { canInvite } = usePermissions();
+
   useEffect(() => {
-  if (!activeOrg) return;
+    if (!activeOrg) return;
 
-  navigate("/", { replace: true });
-}, [activeOrg?.id]);
-
+    navigate("/", { replace: true });
+  }, [activeOrg?.id]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -31,12 +33,14 @@ export function AppLayout({ children }: Props) {
         <div className="flex items-center gap-4">
           <span className="font-bold">Multi-Tenant Task/Project Manager </span>
           <OrganizationSwitcher />
-          <button
-            onClick={() => setShowInvite(true)}
-            className="text-sm text-blue-600"
-          >
-            Invite
-          </button>
+          {canInvite && (
+            <button
+              onClick={() => setShowInvite(true)}
+              className="text-sm text-blue-600"
+            >
+              Invite
+            </button>
+          )}
 
           <button
             onClick={() => setShowCreateOrg(true)}

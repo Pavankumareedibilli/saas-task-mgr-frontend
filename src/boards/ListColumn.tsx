@@ -2,6 +2,7 @@ import type { List } from "../types/list";
 import { CardItem } from "./CardItem";
 import { useState } from "react";
 import { CreateCardForm } from "./CreateCardForm";
+import { usePermissions } from "../permissions/usePermissions";
 
 interface Props {
   list: List;
@@ -9,6 +10,7 @@ interface Props {
 
 export function ListColumn({ list }: Props) {
   const [showForm, setShowForm] = useState(false);
+  const { canManageCards } = usePermissions();
 
   return (
     <div className="w-72 bg-gray-100 rounded p-3 flex-shrink-0 flex flex-col">
@@ -22,16 +24,17 @@ export function ListColumn({ list }: Props) {
           ))}
       </div>
 
-      {showForm ? (
-        <CreateCardForm listId={list.id} onClose={() => setShowForm(false)} />
-      ) : (
-        <button
-          onClick={() => setShowForm(true)}
-          className="text-sm text-gray-600 mt-2"
-        >
-          + Add card
-        </button>
-      )}
+      {canManageCards &&
+        (showForm ? (
+          <CreateCardForm listId={list.id} onClose={() => setShowForm(false)} />
+        ) : (
+          <button
+            onClick={() => setShowForm(true)}
+            className="text-sm text-gray-600 mt-2"
+          >
+            + Add card
+          </button>
+        ))}
     </div>
   );
 }
