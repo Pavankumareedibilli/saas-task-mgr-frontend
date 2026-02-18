@@ -15,7 +15,7 @@ export function MemberList() {
       return;
     }
 
-    setMembers([]); 
+    setMembers([]);
     setLoading(true);
 
     let cancelled = false;
@@ -45,15 +45,23 @@ export function MemberList() {
   if (loading) return <p>Loading members...</p>;
 
   return (
-    <div className="space-y-2">
-      <h3 className="font-bold">Members</h3>
-      <ul>
-        {members.map((m) => (
-          <li key={m.id}>
-            {m.email} — {m.role}
-          </li>
+  
+    <div className="mt-10">
+      <h2 className="text-lg font-semibold mb-4">Members</h2>
+
+      <div className="bg-white border rounded-lg divide-y">
+        {members.map((member) => (
+          <div
+            key={member.id}
+            className="flex justify-between items-center px-4 py-3"
+          >
+            <span className="text-sm">{member.email}</span>
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">
+              {member.role}
+            </span>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }

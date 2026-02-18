@@ -9,12 +9,14 @@ export function BoardList() {
     return <p>Loading boards...</p>;
   }
 
-  if (boards.length === 0) {
-    return <p>No boards yet. Create one.</p>;
-  }
-
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {boards.length === 0 && (
+        <div className="bg-white border rounded-lg p-10 text-center text-gray-500">
+          <p className="text-lg mb-2">No boards yet</p>
+          <p className="text-sm">Create your first board to get started.</p>
+        </div>
+      )}
       {boards.map((board) => (
         <div
           key={board.id}
