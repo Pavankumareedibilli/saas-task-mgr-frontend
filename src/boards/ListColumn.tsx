@@ -13,15 +13,15 @@ export function ListColumn({ list }: Props) {
   const { canManageCards } = usePermissions();
 
   return (
-    <div className="w-72 bg-gray-100 rounded p-3 flex-shrink-0 flex flex-col">
-      <h3 className="font-semibold mb-2">{list.title}</h3>
+    <div className="w-72 bg-gray-50 border rounded-lg p-4 flex-shrink-0 flex flex-col">
+      <h3 className="text-sm font-semibold text-gray-700 mb-3">{list.title}</h3>
 
-      <div className="flex flex-col gap-2">
-        {list.cards
-          .sort((a, b) => a.position - b.position)
-          .map((card) => (
-            <CardItem key={card.id} card={card} />
-          ))}
+      <div className="flex flex-col gap-3">
+        {list.cards.length === 0 ? (
+          <p className="text-xs text-gray-400 mb-2">No cards yet</p>
+        ) : (
+          list.cards.map((card) => <CardItem key={card.id} card={card} />)
+        )}
       </div>
 
       {canManageCards &&
@@ -30,7 +30,7 @@ export function ListColumn({ list }: Props) {
         ) : (
           <button
             onClick={() => setShowForm(true)}
-            className="text-sm text-gray-600 mt-2"
+            className="mt-3 w-full bg-gray-100 hover:bg-gray-200 text-sm text-gray-700 py-2 rounded transition"
           >
             + Add card
           </button>

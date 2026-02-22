@@ -6,7 +6,13 @@ export function BoardList() {
   const navigate = useNavigate();
 
   if (loading) {
-    return <p>Loading boards...</p>;
+    return (
+      <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-40 bg-gray-100 rounded-lg" />
+        ))}
+      </div>
+    );
   }
 
   return (

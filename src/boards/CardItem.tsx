@@ -16,28 +16,29 @@ export function CardItem({ card }: Props) {
   if (!board) return null;
 
   return (
-    <div className="bg-white rounded p-3 shadow-sm border text-sm">
+    <div className="bg-white border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-150">
       <div className="flex justify-between items-center">
-        <span>{card.title}</span>
+        <p className="text-sm font-medium text-gray-800">{card.title}</p>
         {canManageCards && (
           <button
             onClick={() => setShowMove((v) => !v)}
-            className="text-xs text-gray-500"
+            className="text-xs text-gray-500 hover:text-black transition"
           >
             Move
           </button>
         )}
         {canManageCards && (
-          <div className="flex gap-1">
+          <div className="flex gap-2 mt-3">
             <button
               onClick={() => reorderCard(card.id, "up")}
-              className="text-xs text-gray-500"
+              className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition"
             >
               ↑
             </button>
+
             <button
               onClick={() => reorderCard(card.id, "down")}
-              className="text-xs text-gray-500"
+              className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition"
             >
               ↓
             </button>

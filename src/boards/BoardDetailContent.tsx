@@ -13,7 +13,18 @@ export function BoardDetailContent() {
   const navigate = useNavigate();
 
   if (loading) {
-    return <div className="p-6">Loading board...</div>;
+    return (
+      <PageContainer>
+        <div className="animate-pulse space-y-6">
+          <div className="h-6 bg-gray-200 rounded w-1/4" />
+          <div className="flex gap-6">
+            <div className="w-72 h-64 bg-gray-100 rounded-lg" />
+            <div className="w-72 h-64 bg-gray-100 rounded-lg" />
+            <div className="w-72 h-64 bg-gray-100 rounded-lg" />
+          </div>
+        </div>
+      </PageContainer>
+    );
   }
 
   if (!board) {
@@ -40,6 +51,17 @@ export function BoardDetailContent() {
           </p>
         </div>
 
+        {board.lists.length === 0 && (
+          <div className="bg-white border rounded-lg p-8 text-center text-gray-500">
+            <p className="mb-2">No lists yet</p>
+            {canManageLists && (
+              <p className="text-sm">
+                Create your first list to start organizing.
+              </p>
+            )}
+          </div>
+        )}
+
         <div className="flex-1 overflow-x-auto overflow-y-hidden">
           <div className="flex gap-4 p-6 min-h-full">
             {board.lists
@@ -55,7 +77,7 @@ export function BoardDetailContent() {
           ) : (
             <button
               onClick={() => setShowCreateList(true)}
-              className="w-72 border border-dashed rounded p-3 text-sm text-gray-600 flex-shrink-0"
+              className="w-72 bg-gray-100 hover:bg-gray-200 border border-dashed border-gray-300 rounded-lg p-4 text-sm text-gray-600 transition"
             >
               + Add another list
             </button>
