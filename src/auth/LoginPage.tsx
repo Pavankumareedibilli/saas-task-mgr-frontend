@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { useAuth } from "./useAuth";
+import { useNavigate } from "react-router-dom";
 
 export function LoginPage() {
   const { login } = useAuth();
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const pendingToken = localStorage.getItem("pending_invite_token");
+
+  if (pendingToken) {
+    localStorage.removeItem("pending_invite_token");
+    const navigate = useNavigate();
+    navigate(`/accept-invite?token=${pendingToken}`);
+    return;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -43,9 +52,7 @@ export function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button className="w-full bg-blue-600 text-white py-2">
-          Login
-        </button>
+        <button className="w-full bg-blue-600 text-white py-2">Login</button>
       </form>
     </div>
   );

@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { acceptInvite } from "./api";
 import { useAuth } from "../auth/useAuth";
 import { useOrganization } from "./useOrganization";
+import { PageContainer } from "../layout/PageContainer";
 
 export function AcceptInvitePage() {
   const [searchParams] = useSearchParams();
@@ -14,6 +15,14 @@ export function AcceptInvitePage() {
     "loading",
   );
 
+  const token = searchParams.get("token");
+
+  if (!isAuthenticated && token) {
+    localStorage.setItem("pending_invite_token", token);
+    navigate("/login");
+    return null;
+  }
+
   useEffect(() => {
     const token = searchParams.get("token");
 
@@ -22,46 +31,67 @@ export function AcceptInvitePage() {
       return;
     }
 
-    const inviteToken = token;
-    async function accept() {
+    if (!isAuthenticated) {
+      navigate(`/login?redirect=/accept-invite?token=${token}`);
+      return;
+    }
+
+    async function handleAccept(inviteToken: string) {
       try {
-        if (!isAuthenticated) {
-          navigate(`/login?invite_token=${inviteToken}`, { replace: true });
-          return;
-        }
         await acceptInvite(inviteToken);
         await reloadOrganizations();
-        navigate("/", { replace: true });
         setStatus("success");
-      } catch(err) {
-        console.error(err);
+      } catch {
         setStatus("error");
-        return;
-      }
-      if (isAuthenticated) {
-        try {
-          useEffect(() => {
-            reloadOrganizations();
-          }, []);
-        } catch (err) {
-          console.error("Invite accepted but org reload failed", err);
-        }
-        navigate("/", { replace: true });
-      } else {
-        navigate("/login", { replace: true });
       }
     }
 
-    accept();
-  }, [searchParams, navigate, isAuthenticated]);
+    handleAccept(token);
+  }, [searchParams, isAuthenticated, navigate, reloadOrganizations]);
 
-  if (status === "loading") {
-    return <div className="p-10">Accepting invite...</div>;
-  }
+  return (
+    <PageContainer>
+      <div className="max-w-md mx-auto mt-20 bg-white border rounded-lg p-8 text-center">
+        {status === "loading" && (
+          <>
+            <h2 className="text-lg font-semibold mb-4">
+              Accepting Invitation...
+            </h2>
+            <p className="text-sm text-gray-500">
+              Please wait while we add you to the organization.
+            </p>
+          </>
+        )}
 
-  if (status === "error") {
-    return <div className="p-10 text-red-600">Invalid or expired invite</div>;
-  }
+        {status === "success" && (
+          <>
+            <h2 className="text-lg font-semibold mb-4 text-green-600">
+              Invitation Accepted 🎉
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              You have been added to the organization.
+            </p>
 
-  return null;
+            <button
+              onClick={() => navigate("/")}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition"
+            >
+              Go to Dashboard
+            </button>
+          </>
+        )}
+
+        {status === "error" && (
+          <>
+            <h2 className="text-lg font-semibold mb-4 text-red-600">
+              Invalid or Expired Invitation
+            </h2>
+            <p className="text-sm text-gray-600">
+              This invitation link is no longer valid.
+            </p>
+          </>
+        )}
+      </div>
+    </PageContainer>
+  );
 }
