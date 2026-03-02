@@ -30,40 +30,41 @@ export function CardItem({ card, onArchive }: Props) {
 
   return (
     <div className="bg-white border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-150">
-      <div className="flex justify-between items-center">
-        <p className="text-sm font-medium text-gray-800">{card.title}</p>
-
+      <div className="bg-white border rounded-lg p-3 shadow-sm space-y-2">
+        <p className="text-sm font-medium text-gray-800 break-words">
+          {card.title}
+        </p>
         {canManageCards && (
-          <button
-            onClick={() => setShowMove((v) => !v)}
-            className="text-xs text-gray-500 hover:text-black transition"
-          >
-            Move
-          </button>
-        )}
-
-        {canManageCards && (
-          <div className="flex gap-2 mt-3">
+          <div className="flex items-center justify-between pt-2 border-t">
             <button
-              onClick={() => reorderCard(card.id, "up")}
-              className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition"
+              onClick={() => setShowMove((v) => !v)}
+              className="text-xs text-gray-600 hover:text-black"
             >
-              ↑
+              Move
             </button>
 
-            <button
-              onClick={() => reorderCard(card.id, "down")}
-              className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition"
-            >
-              ↓
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => reorderCard(card.id, "up")}
+                className="h-6 w-6 flex items-center justify-center text-xs bg-gray-100 hover:bg-gray-200 rounded"
+              >
+                ↑
+              </button>
 
-            <button
-              onClick={handleArchive}
-              className="text-xs text-red-500 hover:text-red-700 transition"
-            >
-              Archive
-            </button>
+              <button
+                onClick={() => reorderCard(card.id, "down")}
+                className="h-6 w-6 flex items-center justify-center text-xs bg-gray-100 hover:bg-gray-200 rounded"
+              >
+                ↓
+              </button>
+
+              <button
+                onClick={handleArchive}
+                className="text-xs text-red-500 hover:text-red-700 px-1"
+              >
+                Archive
+              </button>
+            </div>
           </div>
         )}
       </div>

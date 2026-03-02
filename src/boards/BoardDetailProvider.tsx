@@ -8,6 +8,7 @@ import { createCard as createCardApi } from "./cardApi";
 import { createList as createListApi } from "./listApi";
 import { moveCard as moveCardApi } from "./cardMoveApi";
 import { reorderCard as reorderCardApi } from "./cardReorderApi";
+import type { Card } from "../types/card";
 
 interface Props {
   children: React.ReactNode;
@@ -68,31 +69,71 @@ export function BoardDetailProvider({ children }: Props) {
       };
     });
   }
-  async function moveCard(cardId: number, targetListId: number) {
-    if (!board) return;
+  // async function moveCard(cardId: number, targetListId: number) {
+  //   if (!board) return;
 
-    const movedCard = await moveCardApi(cardId, targetListId);
+  //   const movedCard = await moveCardApi(cardId, targetListId);
 
-    setBoard((prev) => {
-      if (!prev) return prev;
-      const listsWithoutCard = prev.lists.map((list) => ({
-        ...list,
-        cards: list.cards.filter((c) => c.id !== cardId),
-      }));
-      return {
-        ...prev,
-        lists: listsWithoutCard.map((list) =>
-          list.id === movedCard.list
-            ? {
-                ...list,
-                cards: [...list.cards, movedCard],
-              }
-            : list,
-        ),
-      };
+  //   setBoard((prev) => {
+  //     if (!prev) return prev;
+  //     const listsWithoutCard = prev.lists.map((list) => ({
+  //       ...list,
+  //       cards: list.cards.filter((c) => c.id !== cardId),
+  //     }));
+  //     return {
+  //       ...prev,
+  //       lists: listsWithoutCard.map((list) =>
+  //         list.id === movedCard.list
+  //           ? {
+  //               ...list,
+  //               cards: [...list.cards, movedCard],
+  //             }
+  //           : list,
+  //       ),
+  //     };
+  //   });
+  // }
+async function moveCard(cardId: number, targetListId: number) {
+  if (!board) return;
+
+  let movedCard: Card | null = null;
+
+  setBoard(prev => {
+    if (!prev) return prev;
+
+    const listsWithoutCard = prev.lists.map(list => {
+
+      const found = list.cards.find(c => c.id === cardId);
+
+      if (found) {
+        movedCard = { ...found, list: targetListId }; // force update locally
+        return {
+          ...list,
+          cards: list.cards.filter(c => c.id !== cardId)
+        };
+      }
+
+      return list;
     });
-  }
 
+    if (!movedCard) return prev;
+    const updatedLists = listsWithoutCard.map(list =>
+      list.id === targetListId
+        ? { ...list, cards: [...list.cards, movedCard!] }
+        : list
+    );
+
+    return {
+      ...prev,
+      lists: updatedLists
+    };
+  });
+  try {
+    await moveCardApi(cardId, targetListId);
+  } catch {
+    alert("Move failed");
+  }
+}
   async function reorderCard(cardId: number, direction: "up" | "down") {
     if (!board) return;
 
