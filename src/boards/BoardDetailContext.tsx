@@ -1,8 +1,10 @@
 import { createContext } from "react";
 import type { Board } from "../types/board";
+import type { Dispatch, SetStateAction } from "react";
 
 export interface BoardDetailContextType {
   board: Board | null;
+  setBoard: Dispatch<SetStateAction<Board | null>>;
   loading: boolean;
   reloadBoard: () => Promise<void>;
   createCard: (listId: number, title: string) => Promise<void>;

@@ -6,27 +6,41 @@ import { usePermissions } from "../permissions/usePermissions";
 
 interface Props {
   list: List;
+  onArchiveCard: (listId: number, cardId: number) => void;
 }
 
-export function ListColumn({ list }: Props) {
+export function ListColumn({ list, onArchiveCard }: Props) {
   const [showForm, setShowForm] = useState(false);
   const { canManageCards } = usePermissions();
 
   return (
     <div className="w-72 bg-gray-50 border rounded-lg p-4 flex-shrink-0 flex flex-col">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">{list.title}</h3>
+      <h3 className="text-sm font-semibold text-gray-700 mb-3">
+        {list.title}
+      </h3>
 
       <div className="flex flex-col gap-3">
         {list.cards.length === 0 ? (
           <p className="text-xs text-gray-400 mb-2">No cards yet</p>
         ) : (
-          list.cards.map((card) => <CardItem key={card.id} card={card} />)
+          list.cards.map((card) => (
+            <CardItem
+              key={card.id}
+              card={card}
+              onArchive={(cardId) =>
+                onArchiveCard(list.id, cardId)
+              }
+            />
+          ))
         )}
       </div>
 
       {canManageCards &&
         (showForm ? (
-          <CreateCardForm listId={list.id} onClose={() => setShowForm(false)} />
+          <CreateCardForm
+            listId={list.id}
+            onClose={() => setShowForm(false)}
+          />
         ) : (
           <button
             onClick={() => setShowForm(true)}

@@ -182,6 +182,7 @@ export function BoardDetailProvider({ children }: Props) {
     <BoardDetailContext.Provider
       value={{
         board,
+        setBoard,
         loading,
         reloadBoard: load,
         createCard,

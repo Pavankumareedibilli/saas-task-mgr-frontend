@@ -2,23 +2,37 @@ import type { Card } from "../types/card";
 import { useState } from "react";
 import { useBoardDetail } from "./useBoardDetail";
 import { usePermissions } from "../permissions/usePermissions";
+import { archiveCard } from "./cardApi";
 
 interface Props {
   card: Card;
+  onArchive: (id: number) => void;
 }
 
-export function CardItem({ card }: Props) {
-  const { board, moveCard } = useBoardDetail();
+export function CardItem({ card, onArchive }: Props) {
+  const { board, moveCard, reorderCard } = useBoardDetail();
   const [showMove, setShowMove] = useState(false);
-  const { reorderCard } = useBoardDetail();
   const { canManageCards } = usePermissions();
 
   if (!board) return null;
+
+  async function handleArchive() {
+    const confirmArchive = window.confirm("Archive this card?");
+    if (!confirmArchive) return;
+
+    try {
+      await archiveCard(card.id);
+      onArchive(card.id);
+    } catch {
+      alert("Failed to archive card");
+    }
+  }
 
   return (
     <div className="bg-white border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-150">
       <div className="flex justify-between items-center">
         <p className="text-sm font-medium text-gray-800">{card.title}</p>
+
         {canManageCards && (
           <button
             onClick={() => setShowMove((v) => !v)}
@@ -27,6 +41,7 @@ export function CardItem({ card }: Props) {
             Move
           </button>
         )}
+
         {canManageCards && (
           <div className="flex gap-2 mt-3">
             <button
@@ -42,9 +57,17 @@ export function CardItem({ card }: Props) {
             >
               ↓
             </button>
+
+            <button
+              onClick={handleArchive}
+              className="text-xs text-red-500 hover:text-red-700 transition"
+            >
+              Archive
+            </button>
           </div>
         )}
       </div>
+
       {showMove && (
         <select
           className="mt-2 w-full border text-xs"

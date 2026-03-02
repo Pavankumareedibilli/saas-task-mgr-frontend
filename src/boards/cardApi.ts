@@ -11,3 +11,11 @@ export async function createCard(
   });
   return response.data;
 }
+
+export async function archiveCard(cardId: number) {
+  await http.patch(`/cards/${cardId}/archive/`);
+}
+
+export async function restoreCard(cardId: number) {
+  await http.patch(`/cards/${cardId}/restore/`);
+}
