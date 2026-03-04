@@ -8,24 +8,24 @@ import { useNavigate } from "react-router-dom";
 
 export function BoardDetailContent() {
   const [showCreateList, setShowCreateList] = useState(false);
-  const { board, loading,setBoard  } = useBoardDetail();
+  const { board, loading, setBoard } = useBoardDetail();
   const { canManageLists } = usePermissions();
   const navigate = useNavigate();
 
   function handleArchiveCard(listId: number, cardId: number) {
-  setBoard((prev) => {
-    if (!prev) return prev;
+    setBoard((prev) => {
+      if (!prev) return prev;
 
-    return {
-      ...prev,
-      lists: prev.lists.map((l) =>
-        l.id === listId
-          ? { ...l, cards: l.cards.filter((c) => c.id !== cardId) }
-          : l
-      ),
-    };
-  });
-}
+      return {
+        ...prev,
+        lists: prev.lists.map((l) =>
+          l.id === listId
+            ? { ...l, cards: l.cards.filter((c) => c.id !== cardId) }
+            : l,
+        ),
+      };
+    });
+  }
 
   if (loading) {
     return (
@@ -82,7 +82,21 @@ export function BoardDetailContent() {
             {board.lists
               .sort((a, b) => a.position - b.position)
               .map((list) => (
-                <ListColumn key={list.id} list={list} onArchiveCard={handleArchiveCard} />
+                <ListColumn
+                  key={list.id}
+                  list={list}
+                  onArchiveCard={handleArchiveCard}
+                  onArchiveList={(listId) =>
+                    setBoard((prev) => {
+                      if (!prev) return prev;
+
+                      return {
+                        ...prev,
+                        lists: prev.lists.filter((l) => l.id !== listId),
+                      };
+                    })
+                  }
+                />
               ))}
           </div>
         </div>

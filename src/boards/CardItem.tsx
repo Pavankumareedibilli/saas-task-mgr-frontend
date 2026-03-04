@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useBoardDetail } from "./useBoardDetail";
 import { usePermissions } from "../permissions/usePermissions";
 import { archiveCard } from "./cardApi";
+import { Trash2 } from "lucide-react";
 
 interface Props {
   card: Card;
@@ -60,9 +61,9 @@ export function CardItem({ card, onArchive }: Props) {
 
               <button
                 onClick={handleArchive}
-                className="text-xs text-red-500 hover:text-red-700 px-1"
+                className="p-1 rounded-md text-red-400 hover:text-red-600 hover:bg-red-50 transition"
               >
-                Archive
+                <Trash2 size={16} />
               </button>
             </div>
           </div>
